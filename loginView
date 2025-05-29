@@ -1,0 +1,125 @@
+package com.miempresa.proyecto;
+
+
+//Importaciones necesarias de Vaadin 
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource;
+
+@Route("login")
+
+public class loginview extends VerticalLayout {
+ 
+    //Constructos de la clase
+    public loginview() {
+
+        // Establece que el layout ocupa toda la pantalla
+        setSizeFull(); 
+
+        // Centra el contenido vertical y horizontalmente
+        setJustifyContentMode(JustifyContentMode.CENTER); 
+        setAlignItems(Alignment.CENTER);
+
+        // Define un color de fondo negro para la vista
+        getStyle().set("background-color", "black"); 
+
+        // Layout horizontal para colocar elementos en línea (aunque no se usa finalmente)
+        HorizontalLayout encabezado = new HorizontalLayout();
+        encabezado.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        // Carga una imagen desde el recurso estático como logo
+        StreamResource logo = new StreamResource("banner.png",
+                () -> getClass().getResourceAsStream("/static/images/logo.png"));
+        Image imgLogo = new Image(logo ,"logo");
+        
+        
+        // Define dimensiones del logo
+        imgLogo.setWidth("150px");  
+        imgLogo.setHeight("150px");
+
+        // Agrega el encabezado al layout principal (aunque imgLogo no se añade realmente)
+        add(encabezado);
+       
+        // Campo de texto para ingresar el nombre de usuario
+        TextField usuario = new TextField("Usuario");
+        usuario.setPlaceholder("Escriba su usuario");
+        usuario.getElement().setAttribute("autocomplete", "off");
+
+        // Campo para contraseña
+        PasswordField contraseña = new PasswordField("Contraseña");
+        contraseña.setPlaceholder("Escriba su ******");
+        usuario.getElement().setAttribute("autocomplete", "off");
+      
+        // Botón para iniciar sesión
+        Button entrada = new Button("Entrar");
+
+        entrada.addClickListener(e -> {
+
+            boolean valido = true;
+
+            // Elimina cualquier borde rojo previo
+            usuario.getStyle().remove("border");
+            contraseña.getStyle().remove("border");
+
+            // Obtiene los valores ingresados, eliminando espacio
+            String nombreUsuario = usuario.getValue().trim();
+            String clave = contraseña.getValue().trim();
+
+            // Validación: campo de usuario vacío
+            if (usuario.getValue().trim().isEmpty()) {
+                usuario.getStyle().set("border", "2px solid red");
+                valido = false;
+            }
+
+            // Validación: campo de contraseña vacío
+            if (contraseña.getValue().trim().isEmpty()) {
+                contraseña.getStyle().set("border", "2px solid red");
+                valido = false;
+            }
+
+            // Si algún campo está vacío, muestra notificación y sale del método
+            if(!valido){
+                Notification.show("Los campos no pueden estar vacíos", 3000, Notification.Position.MIDDLE);
+                return;
+            }
+
+
+            // Busca el usuario ingresado en alguna fuente de datos estática
+            Usuarios.Usuario user = Usuarios.buscarUsuario(nombreUsuario);
+
+            // Si no existe el usuario
+            if (user == null) {
+                Notification.show("Usuario no encontrado", 3000, Notification.Position.MIDDLE);
+            
+            // Si la contraseña no coincide
+            } else if (!user.getContraseña().equals(clave)) {
+                Notification.show("Contraseña incorrecta", 3000, Notification.Position.MIDDLE);
+            
+            // Si todo es correcto
+            } else {
+                Notification.show("Inicio de sesión exitoso", 2000, Notification.Position.MIDDLE);
+                getUI().ifPresent(ui -> ui.navigate("principal"));
+            }
+      });
+
+        // Permite iniciar sesión presionando ENTER en el campo usuario
+        usuario.addKeyPressListener(Key.ENTER, e -> entrada.click());
+
+        // También permite hacerlo desde el campo contraseña
+        contraseña.addKeyPressListener(Key.ENTER, e -> entrada.click());
+
+         // Agrega los componentes visuales a la vista principal
+        add( new H2("INICIAR SESION "), usuario, contraseña, entrada);
+       }
+    }
+
