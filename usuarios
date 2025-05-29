@@ -1,0 +1,54 @@
+package com.miempresa.proyecto;
+
+// Importa las clases necesarias para trabajar con listas
+import java.util.ArrayList;
+import java.util.List;
+import com.vaadin.flow.router.Route;
+
+@Route("Usuario")
+public class Usuarios {
+
+    // Lista estática para almacenar los usuarios creados
+    private static List<Usuario> listaUsuarios = new ArrayList<>();
+
+    // Clase interna que representa a un usuario
+    public static class Usuario {
+        
+        // Atributos privados del usuario: nombre y contraseña
+        private String nombre;
+        private String contraseña;
+
+        // Constructor para crear un nuevo usuario con nombre y contraseña
+        public Usuario(String nombre, String contraseña) {
+            this.nombre = nombre;
+            this.contraseña = contraseña;
+        }
+
+        // Método getter para obtener el nombre del usuario
+        public String getNombre() {
+            return nombre;
+        }
+
+        // Método getter para obtener la contraseña del usuario
+        public String getContraseña() {
+            return contraseña;
+        }
+    }
+
+    // Método estático para agregar un nuevo usuario a la lista
+    public static void agregarUsuario(String nombre, String contraseña) {
+        listaUsuarios.add(new Usuario(nombre, contraseña));
+    }
+
+    // Método estático para buscar un usuario por nombre en la lista
+    public static Usuario buscarUsuario(String nombre) {
+        for (Usuario u : listaUsuarios) {
+            // Si el nombre coincide, se retorna el usuario encontrado
+            if (u.getNombre().equals(nombre)) {
+                return u;
+            }
+        }
+        // Si no se encuentra, se retorna null
+        return null;
+    }
+}
