@@ -1,0 +1,121 @@
+
+package com.miempresa.proyecto; 
+
+import com.miempresa.proyecto.Usuarios.Usuario;
+
+// Importaciones de componentes Vaadin para construir la interfaz de usuario
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource;
+
+
+@Route("registrar")
+public class registrarView extends VerticalLayout {
+
+    // Constructor de la vista
+    public registrarView() {
+
+        // La vista ocupa todo el tamaño disponible
+        setSizeFull();
+
+        // Centra los componentes en el eje vertical y horizontal
+        setJustifyContentMode(JustifyContentMode.CENTER);
+        setAlignItems(Alignment.CENTER);
+
+        // Establece un fondo negro para la vista
+        getStyle().set("background-color", "black");
+
+        // Layout horizontal (aunque no se le añade nada útil directamente)
+        HorizontalLayout encabezado = new HorizontalLayout();
+        encabezado.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        // Carga una imagen como recurso desde la carpeta estática
+        StreamResource logo = new StreamResource("banner.png",
+                () -> getClass().getResourceAsStream("/static/images/logo.png"));
+
+        // Crea el componente de imagen
+        Image imgLogo = new Image(logo ,"logo");
+        imgLogo.setWidth("150px");  
+        imgLogo.setHeight("150px");
+
+        // Se agrega el layout del encabezado (aunque el logo no se añade a él)
+        add(encabezado);
+
+        // Campo de texto para el nombre de usuario
+        TextField usuario = new TextField("Nombre de usuario");
+        usuario.setPlaceholder("Escriba el nombre que quiere");
+
+        // Campo de contraseña
+        PasswordField contraseña = new PasswordField("Contraseña");
+        contraseña.setPlaceholder("Escriba una Contraseña");
+
+        // Botón para ejecutar el registro
+        Button registrar = new Button("Registrarse");
+
+        // Acción que se ejecuta al hacer clic en el botón
+        registrar.addClickListener(e -> {
+            boolean valido = true;
+
+            // Limpia cualquier borde de error anterior
+            usuario.getStyle().remove("border");
+            contraseña.getStyle().remove("border");
+
+            // Valida si los campos están vacíos y marca con borde rojo si es así
+            if (usuario.getValue().trim().isEmpty()) {
+                usuario.getStyle().set("border", "2px solid red");
+                valido = false;
+            }
+
+            if (contraseña.getValue().trim().isEmpty()) {
+                contraseña.getStyle().set("border", "2px solid red");
+                valido = false;
+            }
+
+            // Si algún campo está vacío, muestra una notificación y detiene el proceso
+            if (!valido) {
+                Notification.show("Completa todos los campos");
+                return;
+            }
+            
+            // Obtiene los valores ingresados
+            String nombreUsuario = usuario.getValue();
+            String clave = contraseña.getValue();
+                
+            // Verifica si el usuario no existe ya
+            if (Usuarios.buscarUsuario(nombreUsuario) == null) {
+                // Si no existe, lo agrega
+                Usuarios.agregarUsuario(nombreUsuario, clave);
+
+                // Notificación de éxito
+                Notification.show("Usuario registrado con éxito");
+
+                // Limpia los campos
+                usuario.clear();
+                contraseña.clear();
+            } else {
+                // Si ya existe, muestra notificación de error
+                Notification.show("El usuario ya existe");
+            }
+        });
+
+        // Permite enviar el formulario al presionar ENTER en el campo usuario
+        usuario.addKeyPressListener(Key.ENTER, e -> registrar.click());
+
+        // También al presionar ENTER en el campo contraseña
+        contraseña.addKeyPressListener(Key.ENTER, e -> registrar.click());
+
+        // Agrega los elementos visuales a la vista
+        add(new H2("REGISTRARSE "), usuario, contraseña, registrar);
+    }
+}
