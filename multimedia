@@ -1,0 +1,42 @@
+package com.miempresa.proyecto;
+
+public class MultimediaItem {
+
+    private String titulo;            // Título del elemento
+    private String genero;            // Género (acción, drama, documental, etc.)
+    private int calificacion;         // Calificación (por ejemplo, de 1 a 5)
+    private boolean estadoPrestamo;   // Estado de préstamo: true si está prestado, false si está disponible
+    private String descripcion;       // Breve descripción del contenido
+    private String url;               // URL o ruta al archivo multimedia
+
+    // Constructor que inicializa todos los atributos
+    public MultimediaItem(String titulo, String genero, int calificacion, boolean estadoPrestamo, String descripcion, String url) {
+        this.titulo = titulo;
+        this.genero = genero;
+        this.calificacion = calificacion;
+        this.estadoPrestamo = estadoPrestamo;
+        this.descripcion = descripcion;
+        this.url = url;
+    }
+
+    // Métodos getter y setter para cada atributo
+    // Permiten acceder y modificar los valores de los atributos de forma controlada
+
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+
+    public String getGenero() { return genero; }
+    public void setGenero(String genero) { this.genero = genero; }
+
+    public int getCalificacion() { return calificacion; }
+    public void setCalificacion(int calificacion) { this.calificacion = calificacion; }
+
+    public boolean isEstadoPrestamo() { return estadoPrestamo; }
+    public void setEstadoPrestamo(boolean estadoPrestamo) { this.estadoPrestamo = estadoPrestamo; }
+
+    public String getUrl() { return url; }
+    public void setUrl(String url) { this.url = url; }
+
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+}
