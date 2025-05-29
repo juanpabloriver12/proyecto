@@ -1,0 +1,84 @@
+package com.miempresa.proyecto;
+
+import com.vaadin.copilot.javarewriter.JavaRewriter;
+
+// Importación de componentes Vaadin que se usan para crear la interfaz de usuario
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.PageTitle; 
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource; 
+
+@Route
+@PageTitle("MEDIAVERSO")
+
+public class proyectocodigo extends VerticalLayout {
+
+    // Constructor de la vista
+    public proyectocodigo() {
+
+        // Hace que el layout ocupe todo el espacio de la pantalla
+        setSizeFull();
+
+        // Establece el color de fondo de toda la vista
+        getStyle().set("background-color", "black");
+        
+        // Centra el contenido en el eje vertical y horizontal
+        setJustifyContentMode(JustifyContentMode.CENTER); 
+        setAlignItems(Alignment.CENTER);
+
+        // Establece espaciado y relleno en los componentes del layout
+        setPadding(true);
+        setSpacing(true);
+
+        // Crea un layout horizontal que puede ser usado para un encabezado visual
+        HorizontalLayout encabezado = new HorizontalLayout();
+        encabezado.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        // Crea una imagen desde los recursos estáticos
+        StreamResource logo = new StreamResource("logo.png",
+                () -> getClass().getResourceAsStream("/static/images/logo.png"));
+
+        // Crea el componente de imagen y le da tamaño
+        Image imgLogo = new Image(logo, "logo");
+        imgLogo.setWidth("150px");  
+        imgLogo.setHeight("150px");
+
+        // Aunque se crea el encabezado, la imagen no se agrega a él (esto podría corregirse)
+        add(encabezado);
+
+        // Crea el título principal de la página
+        H1 titulo = new H1("MEDIAVERSO");
+
+        // Aplica estilos personalizados al título
+        titulo.getStyle()
+            .set("color", "blue")
+            .set("font-family", "'Courier New', Courier, monospace")
+            .set("font-size", "4em");
+
+        // Botón que lleva a la vista de login
+        Button login = new Button("Iniciar Sesión", 
+            e -> getUI().ifPresent(ui -> ui.navigate("login")));
+
+        // Botón que lleva a la vista de registro
+        Button registrar = new Button("Registrarse", 
+            e -> getUI().ifPresent(ui -> ui.navigate("registrar")));
+        
+        // Agrupa los botones en un layout vertical
+        VerticalLayout botones = new VerticalLayout(login, registrar);
+
+        // Estilos del layout de botones
+        botones.setSpacing(true); // Añade espacio entre los botones
+        botones.setAlignItems(Alignment.CENTER); // Centra los botones horizontalmente
+        botones.setPadding(false); // Elimina relleno
+        botones.setMargin(false); // Elimina márgenes
+
+        // Agrega el título y el layout de botones al layout principal
+        add(titulo, botones);
+    }
+}
